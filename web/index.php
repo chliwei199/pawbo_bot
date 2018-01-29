@@ -1,12 +1,8 @@
 <?php 
 require_once '../vendor/autoload.php';
-//use Google\Cloud\Language\LanguageClient;
+use Google\Cloud\Language\LanguageClient;
 use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
-
-
-define("_data_maxsize", 10);
-//$test=constant("_Carouse_MAXSIZE");
 
 
 	if (file_exists(__DIR__.'/.env')){
@@ -53,12 +49,30 @@ define("_data_maxsize", 10);
         if ($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage) {
 			$entity_names='';
 			$getText = $event->getText();
-					
+			
+//call pawbo soap API		
+			$soap = new SoapClient("https://www.pawbo.com/tw/api/v2_soap?wsdl");
+			$sessionID = $soap->__soapCall("login",array('username'=>'wade.chao','apiKey'=>'Pawbo1234'));
+			
+			$result = $soap->__soapCall("resources",array('sessionId'=>$sessionID));
 
-			// $language = new LanguageClient([
+//下面是介接 語意分析和APIAI的CODE
+			// $NLP_json=[
+			// 	"type"=> 'service_account',
+			// 	"project_id"=> getenv('project_id'),
+			// 	"private_key_id"=> getenv('private_key_id'),
+			// 	"private_key"=> str_replace('|', "\n",getenv('private_key')),
+			// 	"client_email"=> getenv('client_email'),
+			// 	"client_id"=> getenv('client_id'),	
+			// 	"auth_uri"=> getenv('auth_uri'),
+			// 	"token_uri"=> getenv('token_uri'),
+			// 	"auth_provider_x509_cert_url"=> getenv('auth_provider_x509_cert_url'),
+			// 	"client_x509_cert_url"=> getenv('client_x509_cert_url'),
+			// ];
+     		// $language = new LanguageClient([
 			// 	'projectId' => 'naturallanguageprocess-191606',
 			// 	'type'=>'PLAIN_TEXT',
-			// 	'keyFile' => json_decode(file_get_contents('client_secret.json'), true)
+			// 	'keyFile' => $NLP_json
 				
 			// ]);
 			
@@ -70,8 +84,16 @@ define("_data_maxsize", 10);
 			// }
 
 			// $result= find_synonym(urlencode($entity_names));
-			$result= find_synonym(urlencode($getText));
-			$textMessage = new \LINE\LINEBot\MessageBuilder\TextMessageBuilder($result);
+			
+
+			// if(strpos( $result, '_') !== false){
+			// 	include('event/message_event/bot_ask.php');
+			// }else{
+			// 	include('event/message_event/no_event.php');
+			// }
+
+		//	$result= find_synonym(urlencode($getText));
+			$textMessage = new TextMessageBuilder($getText);
 			$response =  $bot->replyMessage($reply_token, $textMessage);
         }
 
@@ -105,7 +127,7 @@ define("_data_maxsize", 10);
 	function find_synonym($getText){
 		$ch = curl_init();
 		// set url
-		curl_setopt($ch, CURLOPT_URL, "https://api.dialogflow.com/v1/query?v=20170712&query='.$getText.'&lang=en&sessionId=" .trim(getenv('sessionID')));
+		curl_setopt($ch, CURLOPT_URL, "https://api.dialogflow.com/v1/query?v=20170712&query='$getText'&lang=en&sessionId=" .trim(getenv('sessionID')));
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json', 'Authorization: Bearer '.trim(getenv('CLIENT_ACCESS_TOKEN'))));
 		//return the transfer as a string
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
