@@ -17,7 +17,7 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
  
 	$signature = $_SERVER["HTTP_".\LINE\LINEBot\Constant\HTTPHeader::LINE_SIGNATURE];
 	$body = file_get_contents("php://input");
-//	$redis= new App\event\RedisHandler;				//create RedisHandler object
+	$redis= new App\event\RedisHandler;				//create RedisHandler object
 
 	//error_log("Signature: ".$signature);
 
@@ -26,7 +26,8 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
     foreach ($events as $event){
 	
 		$reply_token = $event->getReplyToken();
-
+		$user_id=$event->getUserId();
+		$redis->addUserId($user_id); //add user_id to redis row
 		//follow event 
         if ($event instanceof \LINE\LINEBot\Event\FollowEvent) { 
 
