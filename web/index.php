@@ -51,10 +51,10 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
 			$getText = $event->getText();
 			
 //call pawbo soap API		
-			$soap = new SoapClient("https://www.pawbo.com/tw/api/v2_soap?wsdl");
-			$sessionID = $soap->__soapCall("login",array('username'=>'wade.chao','apiKey'=>'Pawbo1234'));
+			//$soap = new SoapClient("https://www.pawbo.com/tw/api/v2_soap?wsdl");
+			//$sessionID = $soap->__soapCall("login",array('username'=>'wade.chao','apiKey'=>'Pawbo1234'));
 			
-			$result = $soap->__soapCall("resources",array('sessionId'=>$sessionID));
+			//$result = $soap->__soapCall("resources",array('sessionId'=>$sessionID));
 
 //下面是介接 語意分析和APIAI的CODE
 			// $NLP_json=[
@@ -92,8 +92,11 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
 			// 	include('event/message_event/no_event.php');
 			// }
 
-		//	$result= find_synonym(urlencode($getText));
-			$textMessage = new TextMessageBuilder($getText);
+			$result= find_synonym(urlencode($getText));
+			if($result===''){
+				include('event/message_event/no_event.php');
+			}
+			$textMessage = new TextMessageBuilder($result);
 			$response =  $bot->replyMessage($reply_token, $textMessage);
         }
 
