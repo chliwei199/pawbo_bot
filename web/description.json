@@ -1,6 +1,11 @@
 {
-		"bot_follow_event": "您好{{emoji code='100003'}}\r\n感謝您加入卡好用Chat Bot，卡好用幫你整理銀行和商家合作的信用卡優惠，讓你將消費省下的小錢，漸漸累積成一筆小財富！{{emoji code='1F4B0'}}。\r\n\r\n{{emoji code='1F4F2'}} 卡好用APP\r\n {{emoji code='2728'}} iOS- bit.ly/FBabout_iOS\r\n {{emoji code='2728'}} Android- bit.ly/FBabout_Android\r\n",
-		"bot_join_event": "{{emoji code='10002D'}}大家我是卡好用BOT，歡迎加入好友，提供更多服務給您，卡好用關心您。{{emoji code='100005'}}",
-		"bot_postback_event_continue_search": "繼續搜尋",
-		"bot_postback_event_cardhoin_service": "回卡好用服務"
+		"bot_follow_event": "您好{{emoji code='100003'}}\r\n感謝您加入PAWBO Chat Bot，卡好用幫你整理銀行和商家合作的信用卡優惠，讓你將消費省下的小錢，漸漸累積成一筆小財富！{{emoji code='1F4B0'}}。\r\n\r\n{{emoji code='1F4F2'}} 卡好用APP\r\n {{emoji code='2728'}} iOS- bit.ly/FBabout_iOS\r\n {{emoji code='2728'}} Android- bit.ly/FBabout_Android\r\n",
+		"bot_join_event": "{{emoji code='10002D'}}大家我是PAWBO BOT，歡迎加入好友，提供更多服務給您，PAWBO關心您。{{emoji code='100005'}}",
+		"bot_postback_event_continue_search": "繼續查詢",
+		"bot_postback_event_pawbo_service": "回列表",
+		"Q購買篇":["訂購商品後運送方式為何？多久會到貨？(請輸入「1」)", "國內運費計算的方式為何？(請輸入「2」)", "商品收到了，但是沒有附上發票？(請輸入「3」)"],
+		"A購買篇":["台灣本島採黑貓宅急便配送，一般於交易完成(付款成功)後約3個工作天(不含假日)內送達。金門，澎湖，馬祖離島區地區若遇天候、海象、船班年節停航及船班歲修等不可控之因素，則配達日將會往後順延。海外地區則採DHL跨海配送，一般於交易完成(付款成功)後約3個工作天(不含假日)內出貨寄出，若遇天候、海象、船班年節停航及船班歲修等不可控之因素，則配達日將會往後順延。為求出貨與送達時間順利，海外地區用戶(如：香港)，於帳單／付款程序請填寫正確之「英文地址」。"
+				 ,"預購期間全館免運。凡台灣本島配送之訂單，皆享免運費。"
+				 ,"國內配送訂單發票不隨貨附上，將於７天鑑賞期後以平信寄出至訂購人地址。海外配送我們將不會開立中華民國統一發票給您，並會隨包裹附上Invoice 供您確認商品獲報賬。(註：依營業稅法，直接外銷貨物或勞務予國外買受人得免開立統一發票)"]
+			
 }
