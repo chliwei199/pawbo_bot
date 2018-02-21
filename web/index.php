@@ -27,7 +27,7 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
 	
 		$reply_token = $event->getReplyToken();
 		$user_id=$event->getUserId();
-		$redis->addUserId($user_id); //add user_id to redis row
+	//	$redis->addUserId($user_id); //add user_id to redis row
 		//follow event 
         if ($event instanceof \LINE\LINEBot\Event\FollowEvent) { 
 
@@ -50,55 +50,43 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
         if ($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage) {
 			$entity_names='';
 			$getText = $event->getText();
-			
 //call pawbo soap API		
 			//$soap = new SoapClient("https://www.pawbo.com/tw/api/v2_soap?wsdl");
 			//$sessionID = $soap->__soapCall("login",array('username'=>'wade.chao','apiKey'=>'Pawbo1234'));
-			
 			//$result = $soap->__soapCall("resources",array('sessionId'=>$sessionID));
-
-//下面是介接 語意分析和APIAI的CODE
-			// $NLP_json=[
-			// 	"type"=> 'service_account',
-			// 	"project_id"=> getenv('project_id'),
-			// 	"private_key_id"=> getenv('private_key_id'),
-			// 	"private_key"=> str_replace('|', "\n",getenv('private_key')),
-			// 	"client_email"=> getenv('client_email'),
-			// 	"client_id"=> getenv('client_id'),	
-			// 	"auth_uri"=> getenv('auth_uri'),
-			// 	"token_uri"=> getenv('token_uri'),
-			// 	"auth_provider_x509_cert_url"=> getenv('auth_provider_x509_cert_url'),
-			// 	"client_x509_cert_url"=> getenv('client_x509_cert_url'),
-			// ];
-     		// $language = new LanguageClient([
-			// 	'projectId' => 'naturallanguageprocess-191606',
-			// 	'type'=>'PLAIN_TEXT',
-			// 	'keyFile' => $NLP_json
-				
-			// ]);
 			
-			// $annotation = $language->analyzeEntities($getText);
-
-			// foreach ($annotation->entities() as $entity) {
-			// 	//echo $entity['type'];
-			// 	$entity_names=trim($entity_names).$entity['name'];
-			// }
-
-			// $result= find_synonym(urlencode($entity_names));
-			
-
-			// if(strpos( $result, '_') !== false){
-			// 	include('event/message_event/bot_ask.php');
-			// }else{
-			// 	include('event/message_event/no_event.php');
-			// }
-
-			$result= find_synonym(urlencode($getText));
-			if($result===''){
-				include('event/message_event/no_event.php');
+			$user_status=$redis->checkStatus($user_id); //user status
+			if($user_status!=='' and is_numeric($getText)){
+				$getText=intval($getText)-1;
+				switch ($user_status) {
+					 default :
+					$getText = '{"FAQ_ANSWER='.$user_status.':'.$getText.'"}';
+					break;				
+				}
 			}
-			$textMessage = new TextMessageBuilder($result);
-			$response =  $bot->replyMessage($reply_token, $textMessage);
+
+			//use regex to judge user's word from menu or write
+			$pattern_angle = "/\{\"(.*?)\"\}/"; // remain {"..."}
+			preg_match_all($pattern_angle,$getText, $matches_getText);
+
+			//$matches_getText[1][0], it will get result match keyword or null
+			if ( ! isset ( $matches_getText[1][0] )){
+				$result= find_synonym(urlencode($getText));
+				$textMessage = new TextMessageBuilder($result);
+				$response =  $bot->replyMessage($reply_token, $textMessage);
+			}else{
+				$array = [
+					"MENU_FAQ" => "bot_menu_faq",
+					"產品介紹" => "bot_greeting",
+					"哪裡購買" => "bot_greeting",
+					"EVENT"=>"bot_instruction",
+					preg_match ("/\FAQ:/i", $matches_getText[1][0]) == 1 ? $matches_getText[1][0] : "" => "bot_faq_ask",
+					preg_match ("/\FAQ_ANSWER=/i", $matches_getText[1][0]) == 1 ? $matches_getText[1][0] : "" => "bot_faq_answer",
+				];	
+				if(isset($array[$matches_getText[1][0]])){
+					include('event/message_event/'.$array[$matches_getText[1][0]].'.php');
+				}	
+			}
         }
 
 		//location event 		
