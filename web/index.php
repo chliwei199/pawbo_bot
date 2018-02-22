@@ -77,7 +77,7 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
 			}else{
 				$array = [
 					"MENU_FAQ" => "bot_menu_faq",
-					"產品介紹" => "bot_greeting",
+					"產品介紹" => "bot_product_introduction",
 					"哪裡購買" => "bot_greeting",
 					"EVENT"=>"bot_instruction",
 					preg_match ("/\FAQ:/i", $matches_getText[1][0]) == 1 ? $matches_getText[1][0] : "" => "bot_faq_ask",
