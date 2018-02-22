@@ -2,6 +2,7 @@
 namespace App\event;
 use LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
+use LINE\LINEBot\MessageBuilder\ImageMessageBuilder;
 use LINE\LINEBot\TemplateActionBuilder\UriTemplateActionBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselColumnTemplateBuilder;
 use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
@@ -27,6 +28,14 @@ class UtilityHandler {
 		}
 		return $listener->getJson();
 	}
+	public function tag_translate_picture($ori_string){
+		$pattern_square = "/\{{(.*)\s\w+='(.*)'\}}/"; // deal with{{...}}
+		// Tag content_og_tag																
+		preg_match_all($pattern_square, $ori_string, $matches);
+		$baseUrl='https://'. $_SERVER['HTTP_HOST'].getenv('image_path').$matches[2][0].'.png?_ignore=';	
+	   return new ImageMessageBuilder($baseUrl,$baseUrl);
+	}
+
 	public function emoji($ID){
 		$bin = hex2bin(str_repeat('0', 8 - strlen($ID)) . $ID);
 	   $emoticon =  mb_convert_encoding($bin, 'UTF-8', 'UTF-32BE');
