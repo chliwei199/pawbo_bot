@@ -21,14 +21,23 @@
                 $MultiMessageBuilder->add($ImageMessageBuilder);    
               
         }else{
-                $faq_answer =$jsonString['A'.$matches_getText_split[0]][intval($matches_getText_split[1])];
-                $MultiMessageBuilder->add( new TextMessageBuilder($faq_answer));
-               
+                $jsonString_split=explode("#", $jsonString['A'.$matches_getText_split[0]][intval($matches_getText_split[1])]);
+                //$faq_answer =$jsonString['A'.$matches_getText_split[0]][intval($matches_getText_split[1])];
+                if(count($jsonString_split)<2){
+                   $MultiMessageBuilder->add( new TextMessageBuilder( $jsonString_split[0])); //if the description do not have keyword'#', it shows all words
+                }else{
+                   $MultiMessageBuilder->add( new TextMessageBuilder($jsonString_split[0])); 
+                   foreach($jsonString_split as $key=>$jsonString_split_obj){
+                           if($key>0){ 
+                                $MultiMessageBuilder->add($UtilityHandler->tag_translate_picture($jsonString_split_obj));
+                           }
+                   }	
+                }
                 $actions = array(
-                        new PostbackTemplateActionBuilder("繼續查詢", "map_key=Y"),
-                        new PostbackTemplateActionBuilder("回列表","map_key=N")
+                        new PostbackTemplateActionBuilder("繼續看", "map_key=Y"),
+                        new PostbackTemplateActionBuilder("回常見問題","map_key=N")
                 );
-                $button = new ConfirmTemplateBuilder(emoji('1F4CC')." 確認問題？", $actions);
+                $button = new ConfirmTemplateBuilder(emoji('1F4CC'), $actions);
                 $msg2 = new TemplateMessageBuilder(emoji('1F50D')."這訊息要在手機上才能看唷", $button);
                 $MultiMessageBuilder->add($msg2);		
         }
