@@ -50,10 +50,6 @@ use LINE\LINEBot\MessageBuilder\TemplateBuilder\CarouselTemplateBuilder;
         if ($event instanceof \LINE\LINEBot\Event\MessageEvent\TextMessage) {
 			$entity_names='';
 			$getText = $event->getText();
-//call pawbo soap API		
-			//$soap = new SoapClient("https://www.pawbo.com/tw/api/v2_soap?wsdl");
-			//$sessionID = $soap->__soapCall("login",array('username'=>'wade.chao','apiKey'=>'Pawbo1234'));
-			//$result = $soap->__soapCall("resources",array('sessionId'=>$sessionID));
 			
 			$user_status=$redis->checkStatus($user_id); //user status
 			if($user_status!=='' and is_numeric($getText)){
